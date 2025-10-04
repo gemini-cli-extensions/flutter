@@ -155,5 +155,91 @@ void main() {
         await client.shutdown();
       },
     );
+
+    test.test(
+      'hot_restart tool sends restart command to running app',
+      () async {
+        final dtdUri = 'ws://127.0.0.1:12345/abcdefg=';
+        final processPid = 54321;
+        final mockProcessManager = MockProcessManager();
+        mockProcessManager.addCommand(
+          Command(
+            [
+              '/path/to/flutter/sdk/bin/flutter',
+              'run',
+              '--print-dtd',
+              '--device-id',
+              'test-device',
+            ],
+            stdout: 'The Dart Tooling Daemon is available at: $dtdUri\n',
+            pid: processPid,
+          ),
+        );
+        final serverAndClient = await createServerAndClient(
+          processManager: mockProcessManager,
+          fileSystem: fileSystem,
+        );
+        final server = serverAndClient.server;
+        final client = serverAndClient.client;
+
+        // Initialize
+        await client.initialize(
+          InitializeRequest(
+            protocolVersion: ProtocolVersion.latestSupported,
+            capabilities: ClientCapabilities(),
+            clientInfo: Implementation(name: 'test_client', version: '1.0.0'),
+          ),
+        );
+        client.notifyInitialized();
+
+        // Launch the app first
+        final launchResult = await client.callTool(
+          CallToolRequest(
+            name: 'launch_app',
+            arguments: {'root': '/test/project', 'device': 'test-device'},
+          ),
+        );
+        test.expect(launchResult.isError, test.isNot(true));
+
+        // Perform hot restart
+        final restartResult = await client.callTool(
+          CallToolRequest(name: 'hot_restart', arguments: {'pid': processPid}),
+        );
+
+        test.expect(restartResult.isError, test.isNot(true));
+        test.expect(restartResult.structuredContent, {'success': true});
+        await server.shutdown();
+        await client.shutdown();
+      },
+    );
+
+    test.test('hot_restart tool returns error for non-existent app', () async {
+      final mockProcessManager = MockProcessManager();
+      final serverAndClient = await createServerAndClient(
+        processManager: mockProcessManager,
+        fileSystem: fileSystem,
+      );
+      final server = serverAndClient.server;
+      final client = serverAndClient.client;
+
+      // Initialize
+      await client.initialize(
+        InitializeRequest(
+          protocolVersion: ProtocolVersion.latestSupported,
+          capabilities: ClientCapabilities(),
+          clientInfo: Implementation(name: 'test_client', version: '1.0.0'),
+        ),
+      );
+      client.notifyInitialized();
+
+      // Try to hot restart a non-existent app
+      final restartResult = await client.callTool(
+        CallToolRequest(name: 'hot_restart', arguments: {'pid': 99999}),
+      );
+
+      test.expect(restartResult.isError, true);
+      await server.shutdown();
+      await client.shutdown();
+    });
   });
 }
