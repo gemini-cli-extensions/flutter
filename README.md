@@ -55,6 +55,7 @@ This extension also installs an MCP server (`flutter_launcher`) that provides to
 
 - `launch_app`: Launches a Flutter application on a specified device.
 - `stop_app`: Stops a running Flutter application.
+- `hot_restart`: Performs a hot restart on a running Flutter application, resetting the app state while maintaining the current session.
 - `list_devices`: Lists all available devices that can run Flutter applications.
 - `get_app_logs`: Retrieves the logs from a running Flutter application.
 - `list_running_apps`: Lists all Flutter applications currently running that were started by this extension.

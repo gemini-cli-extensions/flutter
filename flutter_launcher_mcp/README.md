@@ -89,6 +89,40 @@ Launches a Flutter application with specified arguments and returns its DTD URI 
   }
   ```
 
+#### `hot_restart`
+
+Performs a hot restart on a running Flutter application. This restarts the app while maintaining the current session.
+
+- **Input Schema:**
+
+  ```json
+  {
+    "type": "object",
+    "properties": {
+      "pid": {
+        "type": "integer",
+        "description": "The process ID of the flutter run process to hot restart."
+      }
+    },
+    "required": ["pid"]
+  }
+  ```
+
+- **Output Schema:**
+
+  ```json
+  {
+    "type": "object",
+    "properties": {
+      "success": {
+        "type": "boolean",
+        "description": "Whether the hot restart was successful."
+      }
+    },
+    "required": ["success"]
+  }
+  ```
+
 #### `stop_app`
 
 Kills a running Flutter process started by the `launch_app` tool.

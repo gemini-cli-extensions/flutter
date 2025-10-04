@@ -245,6 +245,9 @@ class MockProcess implements Process {
 
   bool killed = false;
 
+  @override
+  late final IOSink stdin = _MockIOSink();
+
   MockProcess({
     required this.stdout,
     required this.stderr,
@@ -268,7 +271,61 @@ class MockProcess implements Process {
     }
     return true;
   }
+}
+
+class _MockIOSink implements IOSink {
+  final List<String> writtenLines = [];
+  bool _closed = false;
 
   @override
-  late final IOSink stdin = throw UnimplementedError();
+  Encoding encoding = utf8;
+
+  @override
+  void add(List<int> data) {
+    if (_closed) throw StateError('IOSink is closed');
+  }
+
+  @override
+  void write(Object? object) {
+    if (_closed) throw StateError('IOSink is closed');
+  }
+
+  @override
+  void writeln([Object? object = '']) {
+    if (_closed) throw StateError('IOSink is closed');
+    writtenLines.add(object.toString());
+  }
+
+  @override
+  Future<void> flush() async {
+    if (_closed) throw StateError('IOSink is closed');
+  }
+
+  @override
+  Future<void> close() async {
+    _closed = true;
+  }
+
+  @override
+  void addError(Object error, [StackTrace? stackTrace]) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future addStream(Stream<List<int>> stream) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future get done => Future.value();
+
+  @override
+  void writeAll(Iterable objects, [String separator = '']) {
+    throw UnimplementedError();
+  }
+
+  @override
+  void writeCharCode(int charCode) {
+    throw UnimplementedError();
+  }
 }
