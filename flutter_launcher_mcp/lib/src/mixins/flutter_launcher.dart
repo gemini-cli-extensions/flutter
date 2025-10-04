@@ -39,6 +39,7 @@ base mixin FlutterLauncherSupport
     registerTool(listDevicesTool, _listDevices);
     registerTool(getAppLogsTool, _getAppLogs);
     registerTool(listRunningAppsTool, _listRunningApps);
+    registerTool(hotRestartTool, _hotRestart);
     return super.initialize(request);
   }
 
@@ -459,6 +460,73 @@ base mixin FlutterLauncherSupport
       ],
       structuredContent: {'apps': apps},
     );
+  }
+
+  /// A tool to perform a hot restart on a running Flutter application.
+  final hotRestartTool = Tool(
+    name: 'hot_restart',
+    description:
+        'Performs a hot restart on a running Flutter application. This restarts the app while maintaining the current session.',
+    inputSchema: Schema.object(
+      properties: {
+        'pid': Schema.int(
+          description:
+              'The process ID of the flutter run process to hot restart.',
+        ),
+      },
+      required: ['pid'],
+    ),
+    outputSchema: Schema.object(
+      properties: {
+        'success': Schema.bool(
+          description: 'Whether the hot restart was successful.',
+        ),
+      },
+      required: ['success'],
+    ),
+  );
+
+  Future<CallToolResult> _hotRestart(CallToolRequest request) async {
+    final pid = request.arguments!['pid'] as int;
+    log(LoggingLevel.info, 'Attempting hot restart for application PID: $pid');
+    final app = _runningApps[pid];
+
+    if (app == null) {
+      log(LoggingLevel.error, 'Application with PID $pid not found.');
+      return CallToolResult(
+        isError: true,
+        content: [TextContent(text: 'Application with PID $pid not found.')],
+      );
+    }
+
+    try {
+      app.process.stdin.writeln('R');
+      await app.process.stdin.flush();
+      log(LoggingLevel.info, 'Hot restart command sent to application $pid.');
+
+      return CallToolResult(
+        content: [
+          TextContent(
+            text: 'Hot restart initiated for application with PID $pid.',
+          ),
+        ],
+        structuredContent: {'success': true},
+      );
+    } catch (e, s) {
+      log(
+        LoggingLevel.error,
+        'Error performing hot restart for application $pid: $e\n$s',
+      );
+      return CallToolResult(
+        isError: true,
+        content: [
+          TextContent(
+            text: 'Failed to perform hot restart for application $pid: $e',
+          ),
+        ],
+        structuredContent: {'success': false},
+      );
+    }
   }
 
   @override
