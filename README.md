@@ -120,8 +120,8 @@ This extension enforces a specific set of coding standards to ensure consistency
 * Running a Flutter app from within Gemini CLI and then triggering a Hot Reload
   does not work in Flutter stable <= 3.35.4.
   Tracking issue: https://github.com/flutter/gemini-cli-extension/issues/82
-* Installing on a Windows machine. You may run into problems when installing
-  this extension on Windows. It appears to be a root issue with Gemini CLI.
+* Installing this extension on Windows may fail due to an apparent root issue
+  with the Gemini CLI.
 
 ## 🐛 Troubleshooting
 
