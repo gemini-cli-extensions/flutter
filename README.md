@@ -121,7 +121,7 @@ This extension enforces a specific set of coding standards to ensure consistency
   does not work in Flutter stable <= 3.35.4.
   Tracking issue: https://github.com/flutter/gemini-cli-extension/issues/82
 * Installing this extension on Windows may fail due to an apparent root issue
-  with the Gemini CLI.
+  with the Gemini CLI. We're not yet aware of a tracking issue for this.
 
 ## 🐛 Troubleshooting
 
