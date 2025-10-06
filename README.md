@@ -40,6 +40,35 @@ gemini extensions update flutter
 gemini extensions uninstall flutter
 ```
 
+**Note for Windows users:** There is currently a [known issue](https://github.com/google-gemini/gemini-cli/issues/10616) with installing extensions on Gemini CLI for Windows. The work around is as follows:
+
+1. Follow instructions above to attempt to install the plugin (this will fail).
+```bash
+    gemini extensions install https://github.com/gemini-cli-extensions/flutter.git
+ ```
+ 
+2. In the command line, navigate to the folder in the home user's path where the code was downloaded (USER is the user's username)
+```bash
+    cd c:\Users\<USER>\AppData\Local\Temp
+```
+ 
+3. Locate the folder for the downloaded extension. It will be the latest titled "gemini-extension<hash>" where <hash> is a 6 character string. Change into this directory.
+```bash
+    cd gemini-extension123456
+```
+
+4. There should be a zip file in this folder called "win32.flutter.zip". Unpack this file using tar
+
+```bash
+    tar xvf win32.flutter.zip
+```
+
+5. Use the path flag to gemini installation
+
+```bash
+    gemini extensions install --path c:\User\<USER>\AppData\Local\Temp\gemini-extension123456
+```
+
 ### 2. Available Commands
 
 The new commands will be available in new Gemini CLI sessions. The following commands will be available (with or without the `flutter:` prefix):
