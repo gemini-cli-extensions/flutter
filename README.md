@@ -115,6 +115,15 @@ This extension enforces a specific set of coding standards to ensure consistency
 - **`flutter.md`**: Contains rules and best practices for writing Dart and Flutter code. These rules are opinionated, and we encourage you to review them to ensure they align with your style.
 - **`override`**: Contains important, high-priority rules that are appended to the end of all prompts to ensure they have the most weight.
 
+## Connecting to a running app
+You can connect to an app by providing the Flutter extension with the URL for the Dart Tooling Daemon:
+
+1. **Run the app**: in VSCode on a target device (iOS, Android, macOS, or web)
+2. **Execute the Copy DTD Uri action**: Open the VSCode Command Runner (Cmd+Shift+P) and type "Copy DTD Uri to Clipboard" to copy the DTD URL to your clipboard
+3. **Paste the URL into Gemini CLI**: Enter a prompt like "Connect to the Flutter app with this DTD URL: " and paste the URL from your clipboard. You should see a "Connection succeeded" message from the connect_dart_tooling_daemon MCP tool.
+
+To learn more about the Dart and Flutter MCP server, see the [Dart and Flutter MCP server]([url](https://dart.dev/tools/mcp-server)) page on dart.dev or the [dart_mcp_server README](https://github.com/dart-lang/ai/tree/main/pkgs/dart_mcp_server).
+
 ## Known issues
 
 * Running a Flutter app from within Gemini CLI and then triggering a Hot Reload
