@@ -66,7 +66,7 @@ gemini extensions uninstall flutter
 5. Use the path flag to gemini installation
 
 ```bash
-    gemini extensions install --path c:\User\<USER>\AppData\Local\Temp\gemini-extension123456
+    gemini extensions install --path c:\Users\<USER>\AppData\Local\Temp\gemini-extension123456
 ```
 
 ### 2. Available Commands
