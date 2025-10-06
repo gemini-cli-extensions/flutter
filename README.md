@@ -40,7 +40,7 @@ gemini extensions update flutter
 gemini extensions uninstall flutter
 ```
 
-**Note for Windows users:** There is currently a [known issue](https://github.com/google-gemini/gemini-cli/issues/10616) with installing extensions on Gemini CLI for Windows. The work around is as follows:
+**Note for Windows users:** There is currently a [known issue](https://github.com/google-gemini/gemini-cli/issues/10616) with installing extensions on Gemini CLI for Windows. The workaround is as follows:
 
 1. Follow instructions above to attempt to install the plugin (this will fail).
 ```bash
