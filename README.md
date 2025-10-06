@@ -49,7 +49,7 @@ gemini extensions uninstall flutter
  
 2. In the command line, navigate to the folder in the home user's path where the code was downloaded (USER is the user's username)
 ```bash
-    cd c:\Users\<USER>\AppData\Local\Temp
+    cd %TEMP%
 ```
  
 3. Locate the folder for the downloaded extension. It will be the latest titled "gemini-extension<hash>" where <hash> is a 6 character string. Change into this directory.
@@ -66,7 +66,7 @@ gemini extensions uninstall flutter
 5. Use the path flag to gemini installation
 
 ```bash
-    gemini extensions install --path c:\Users\<USER>\AppData\Local\Temp\gemini-extension123456
+    gemini extensions install --path %TEMP%\gemini-extension123456
 ```
 
 ### 2. Available Commands
