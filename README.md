@@ -57,7 +57,7 @@ gemini extensions uninstall flutter
     cd gemini-extension123456
 ```
 
-4. There should be a zip file in this folder called "win32.flutter.zip". Unpack this file using tar
+4. There should be a zip file in this folder called "win32.flutter.zip". Unpack this file using `tar` (available in modern Windows versions) or by right-clicking it in File Explorer and selecting "Extract All...".
 
 ```bash
     tar xvf win32.flutter.zip
