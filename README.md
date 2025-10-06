@@ -122,7 +122,7 @@ You can connect to an app by providing the Flutter extension with the URL for th
 2. **Execute the Copy DTD Uri action**: Open the VSCode Command Runner (Cmd+Shift+P) and type "Copy DTD Uri to Clipboard" to copy the DTD URL to your clipboard
 3. **Paste the URL into Gemini CLI**: Enter a prompt like "Connect to the Flutter app with this DTD URL: " and paste the URL from your clipboard. You should see a "Connection succeeded" message from the connect_dart_tooling_daemon MCP tool.
 
-To learn more about the Dart and Flutter MCP server, see the [Dart and Flutter MCP server]([url](https://dart.dev/tools/mcp-server)) page on dart.dev or the [dart_mcp_server README](https://github.com/dart-lang/ai/tree/main/pkgs/dart_mcp_server).
+To learn more about the Dart and Flutter MCP server, see the [Dart and Flutter MCP server](https://dart.dev/tools/mcp-server) page on dart.dev or the [dart_mcp_server README](https://github.com/dart-lang/ai/tree/main/pkgs/dart_mcp_server).
 
 ## Known issues
 
