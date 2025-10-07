@@ -116,13 +116,30 @@ This extension enforces a specific set of coding standards to ensure consistency
 - **`override`**: Contains important, high-priority rules that are appended to the end of all prompts to ensure they have the most weight.
 
 ## Connecting to a running app
-You can connect to an app by providing the Flutter extension with the URL for the Dart Tooling Daemon:
+You can connect to an app by providing the Flutter extension with the URL for
+the Dart Tooling Daemon:
 
 1. **Run the app**: in VSCode on a target device (iOS, Android, macOS, or web)
-2. **Execute the Copy DTD Uri action**: Open the VSCode Command Runner (Cmd+Shift+P) and type "Copy DTD Uri to Clipboard" to copy the DTD URL to your clipboard
-3. **Paste the URL into Gemini CLI**: Enter a prompt like "Connect to the Flutter app with this DTD URL: " and paste the URL from your clipboard. You should see a "Connection succeeded" message from the connect_dart_tooling_daemon MCP tool.
+2. **Execute the Copy DTD Uri action**: Open the VSCode Command Runner
+(Cmd+Shift+P, or Ctrl+Shift+P) and type "Copy DTD Uri to Clipboard" to copy the
+DTD URL to your clipboard
+3. **Paste the URL into Gemini CLI**: Enter a prompt like "Connect to the
+Flutter app with this DTD URL: " and paste the URL from your clipboard. You
+should see a "Connection succeeded" message from the
+connect_dart_tooling_daemon MCP tool.
 
-To learn more about the Dart and Flutter MCP server, see the [Dart and Flutter MCP server](https://dart.dev/tools/mcp-server) page on dart.dev or the [dart_mcp_server README](https://github.com/dart-lang/ai/tree/main/pkgs/dart_mcp_server).
+Alternatively, you can run from the command line with the `--print-dtd` flag:
+
+```
+$ flutter run --print-dtd
+...
+The Dart Tooling Daemon is available at: ws://127.0.0.1:52636/M3G9d1Q3hFk=
+```
+
+To learn more about the Dart and Flutter MCP server, see the
+[Dart and Flutter MCP server](https://dart.dev/tools/mcp-server)
+page on dart.dev or the
+[dart_mcp_server README](https://github.com/dart-lang/ai/tree/main/pkgs/dart_mcp_server).
 
 ## Known issues
 
