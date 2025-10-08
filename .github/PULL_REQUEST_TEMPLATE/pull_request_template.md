@@ -8,7 +8,7 @@ Describe how the change has been tested, including both automated and manual tes
 
 ## Related Issues
 
-- (Any issues related to this change)
+- <!-- Link to any related issues here. Use keywords like "Fixes #123" or "Closes #123" to automatically close them. -->
 
 <!--
 Please see our CONTRIBUTING guide at https://github.com/gemini-cli-extensions/flutter/blob/main/CONTRIBUTING.md
