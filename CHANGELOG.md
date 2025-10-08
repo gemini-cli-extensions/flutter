@@ -1,3 +1,8 @@
+## 0.4.0
+
+- Create the implementation plan and design doc into `specs/` instead of the
+  root of the project.
+
 ## 0.3.0
 
 - Removed the `flutter_launcher` MCP server because it has been integrated into
