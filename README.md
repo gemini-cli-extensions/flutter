@@ -177,6 +177,10 @@ page on dart.dev or the
 
 2.  **"Gemini CLI version error"**: This extension requires Gemini CLI version 0.4.0 or greater. Check your version with `gemini --version` and update if necessary.
 
+3.  **"[WARN] Skipping extension MCP config for server with key "dart" as it already exists."**:
+    This warning is shown if you have the Dart MCP server manually configured in `.gemini/settings.json`.
+    You can remove that manual config of Dart MCP after installing the extension, as the extension initializes the Dart MCP server.
+
 ### Filing Issues
 
 If you have feedback, suggestions, or run into issues, please [file an issue on GitHub](https://github.com/flutter/gemini-cli-extension/issues/new/choose).
