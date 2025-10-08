@@ -1,7 +1,6 @@
 ## 0.4.0
 
-- Create the implementation plan and design doc into `specs/` instead of the
-  root of the project.
+- Created the implementation plan and design doc in the `specs/` directory.
 
 ## 0.3.0
 
