@@ -35,7 +35,7 @@ Then create the package directory, if it doesn't already exist.
 
 ## Design document
 
-Develop a **DETAILED** Markdown-formatted design document that follows all of the guidance you have about Dart and Flutter design patterns, rules, best practices, and core principles. Save the design document in DESIGN.md in the package directory. Feel free to use your available tools to research any aspects of the design that need clarification.
+Develop a **DETAILED** Markdown-formatted design document that follows all of the guidance you have about Dart and Flutter design patterns, rules, best practices, and core principles. Save the design document in specs/DESIGN.md in the package directory. Feel free to use your available tools to research any aspects of the design that need clarification.
 
 The design doc should (at least) include sections for:
 
@@ -54,7 +54,7 @@ You must ask the user to review this design document and they must approve it be
 
 ## Implementation plan
 
-After getting explicit approval from the user for the DESIGN.md document, Develop a **DETAILED** Markdown-formatted phased implementation plan of checkboxed tasks that need to be performed in order to finish developing the package. Save the implementation plan in IMPLEMENTATION.md in the package directory.
+After getting explicit approval from the user for the DESIGN.md document, Develop a **DETAILED** Markdown-formatted phased implementation plan of checkboxed tasks that need to be performed in order to finish developing the package. Save the implementation plan in specs/IMPLEMENTATION.md in the package directory.
 
 The implementation plan should include a section for a "Journal" which will be updated after each phase and contain a log of the actions taken, things learned, surprises, and deviations from the plan. It should be in chronological order.
 
