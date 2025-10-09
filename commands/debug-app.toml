@@ -34,6 +34,13 @@ Next, collect additional information required for debugging. Ask the user one qu
 Before diving into the code, let's verify the project's dependencies and environment.
 
 - [ ] Run `flutter doctor` to get the Flutter and Dart SDK versions and check for any issues reported.
+- [ ] Check the Flutter version output and determine if hot reload is supported:
+  - **IMPORTANT**: Hot reload through the Dart MCP server does not work reliably on Flutter stable ≤ 3.37.0 (see [issue #15](https://github.com/gemini-cli-extensions/flutter/issues/15))
+  - If the user is on Flutter stable ≤ 3.37.0, warn them that hot reload may fail during this debugging session
+  - Suggest they either:
+    1. Switch to Flutter main/master channel for full hot reload support, OR
+    2. Manually restart the app after making code changes instead of using hot_reload
+  - If they choose to proceed with stable, acknowledge their choice and remind them about the limitation when using hot_reload later
 - [ ] Use the `pub` tool with the `outdated` command to look for outdated packages or dependency conflicts in `pubspec.yaml` and `pubspec.lock`.
   - Run the command `pub` tool with `upgrade` to upgrade to latest versions.
   - If that isn't sufficient, sometimes upgrading the package version to a new major version can help. The `pub` tool can't do this, so run the command `dart pub upgrade --major-versions` to do this.
@@ -62,7 +69,9 @@ The debugging strategy should be chosen to yield the best results and may involv
 
 - **Logging and Tracing:**
   - Add strategic logging statements to the code to trace execution flow. Prefer `debugPrint()` over `print()` for cleaner, non-interfering output.
-  - Use `hot_reload` to apply logging changes quickly while preserving the app's state. If the state needs to be reset, explain that a Hot Restart is needed, and you will need to stop and restart the app.
+  - Use `hot_reload` to apply logging changes quickly while preserving the app's state.
+    - **Note**: If the user is on Flutter stable ≤ 3.37.0 and hot_reload fails, suggest they manually restart the app or switch to Flutter main channel
+  - If the state needs to be reset, explain that a Hot Restart is needed, and you will need to stop and restart the app.
 
 - **Flutter DevTools & UI Inspection:**
   - **For UI and layout bugs:** Use the `get_widget_tree` tool to inspect the widget hierarchy and properties.
