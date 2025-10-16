@@ -38,7 +38,7 @@ You can manage the extension with the following commands:
   gemini extensions update flutter
   ```
 
-- Uninstall the extension
+- Uninstall the extension.
 
   ```bash
   gemini extensions uninstall flutter
