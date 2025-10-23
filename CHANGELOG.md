@@ -1,6 +1,10 @@
+# Flutter Gemini CLI Extension Changelog
+
 ## 0.4.0
 
 - Created the implementation plan and design doc in the `specs/` directory.
+- Modified `flutter.md` rules to make it clear that they only apply to Flutter
+  and Dart development.
 
 ## 0.3.0
 
