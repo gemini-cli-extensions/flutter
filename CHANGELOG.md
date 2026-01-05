@@ -5,6 +5,7 @@
 - Created the implementation plan and design doc in the `specs/` directory.
 - Modified `flutter.md` rules to make it clear that they only apply to Flutter
   and Dart development.
+- Removed quoting of "@" from the AI rules, since it is no longer needed.
 
 ## 0.3.0
 
