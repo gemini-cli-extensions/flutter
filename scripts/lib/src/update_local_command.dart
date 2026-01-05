@@ -28,10 +28,13 @@ class UpdateLocalCommand {
     final platform = context.platform;
 
     // 2. Clear and install
+    final home = platform.environment['HOME'] ?? platform.environment['USERPROFILE'];
+    if (home == null || home.isEmpty) {
+      throw ExitException(
+          'Could not determine home directory. Please set HOME or USERPROFILE.');
+    }
     final installDir = fs.path.join(
-      platform.environment['HOME'] ??
-          platform.environment['USERPROFILE'] ??
-          '.',
+      home,
       '.gemini',
       'extensions',
       'flutter',
