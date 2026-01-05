@@ -33,6 +33,7 @@ jobs:
           dart run scripts/bin/build_release.dart
         env:
           GITHUB_MATRIX_OS: ${{ matrix.os }}
+          RUNNER_ARCH: ${{ runner.arch }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

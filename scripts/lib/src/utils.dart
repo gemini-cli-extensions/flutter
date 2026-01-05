@@ -101,12 +101,6 @@ Directory findRepoRoot(ScriptContext context) {
     repoRoot = repoRoot.parent;
   }
 
-  // Fallback: check parent of current directory if loop missed it
-  final fallback = fs.currentDirectory.parent;
-  if (fs.isFileSync(fs.path.join(fallback.path, 'gemini-extension.json'))) {
-    return fallback;
-  }
-
   throw ExitException(
     'Could not find repository root (looked for gemini-extension.json)',
   );
@@ -128,17 +122,24 @@ Future<PlatformInfo> getPlatformInfo(ScriptContext context) async {
   if (githubMatrixOs != null && githubMatrixOs.isNotEmpty) {
     if (githubMatrixOs.startsWith('macos')) {
       os = 'darwin';
-      // On CI, we may need to detect actual arch if not implied by the runner name.
-      var unameM = await captureProcessOutput(context, ['uname', '-m']);
-      arch = unameM.trim().toLowerCase();
     } else if (githubMatrixOs.startsWith('windows')) {
       os = 'windows';
-      arch = 'x64';
     } else if (githubMatrixOs.startsWith('ubuntu')) {
       os = 'linux';
-      arch = 'x64';
     } else {
       throw ExitException('Unknown GITHUB_MATRIX_OS: $githubMatrixOs');
+    }
+
+    if (os == 'windows') {
+      arch = platform.environment['RUNNER_ARCH']?.toLowerCase() ?? 'x64';
+    } else {
+      var runnerArch = platform.environment['RUNNER_ARCH'];
+      if (runnerArch != null && runnerArch.isNotEmpty) {
+        arch = runnerArch.toLowerCase();
+      } else {
+        var unameM = await captureProcessOutput(context, ['uname', '-m']);
+        arch = unameM.trim().toLowerCase();
+      }
     }
   } else {
     os = platform.operatingSystem;
@@ -146,15 +147,13 @@ Future<PlatformInfo> getPlatformInfo(ScriptContext context) async {
       os = 'darwin';
     }
 
-    if (os == 'darwin') {
+    if (os == 'darwin' || os == 'linux') {
       var unameM = await captureProcessOutput(context, ['uname', '-m']);
       arch = unameM.trim().toLowerCase();
-    } else {
-      // Default to x64 for linux/windows if not explicitly checked?
-      // BuildReleaseCommand used 'x64' for others.
-      // UpdateLocalCommand used 'x64' for windows/linux.
-      // We'll mimic that.
+    } else if (os == 'windows') {
       arch = 'x64';
+    } else {
+      throw ExitException('Unknown OS: $os');
     }
   }
 

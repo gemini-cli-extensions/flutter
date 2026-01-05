@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:convert';
+
 import 'utils.dart';
 
 /// A command that updates the extension version.
@@ -40,20 +42,31 @@ class BumpVersionCommand {
 
     if (!jsonFile.existsSync()) {
       throw ExitException(
-          'gemini-extension.json not found at ${jsonFile.path}');
+        'gemini-extension.json not found at ${jsonFile.path}',
+      );
     }
 
-    String content = jsonFile.readAsStringSync();
-    final versionRegex = RegExp(r'"version":\s*"[^"]+"');
-
-    if (versionRegex.hasMatch(content)) {
-      content = content.replaceFirst(versionRegex, '"version": "$newVersion"');
-      jsonFile.writeAsStringSync(content);
-    } else {
-      print('Warning: version field not found with regex, rewriting json.');
+    final String content = jsonFile.readAsStringSync();
+    final Map<String, dynamic> json;
+    try {
+      json = jsonDecode(content) as Map<String, dynamic>;
+    } on FormatException catch (e) {
       throw ExitException(
-          'Could not find "version" field in gemini-extension.json');
+        'Failed to parse gemini-extension.json: ${e.message}',
+      );
     }
+
+    if (!json.containsKey('version')) {
+      throw ExitException(
+        'Could not find "version" field in gemini-extension.json',
+      );
+    }
+
+    json['version'] = newVersion;
+
+    // Use an encoder with indentation for readability and add a trailing newline.
+    const encoder = JsonEncoder.withIndent('  ');
+    jsonFile.writeAsStringSync('${encoder.convert(json)}\n');
   }
 
   void _updateChangelog(String repoPath) {
@@ -96,20 +109,8 @@ class BumpVersionCommand {
             changelogContent.substring(insertIndex),
       );
     } else {
-      // No existing version headers. Check for main title.
-      final titleMatch = RegExp(
-        r'^#\s.*$',
-        multiLine: true,
-      ).firstMatch(changelogContent);
-      if (titleMatch != null) {
-        // Append after title and its trailing newline(s).
-        changelogFile.writeAsStringSync(
-          changelogContent.trimRight() + '\n\n' + newSection.trimRight() + '\n',
-        );
-      } else {
-        // Just prepend if no structure matches.
-        changelogFile.writeAsStringSync(newSection + changelogContent);
-      }
+      // No existing version headers, so prepend to the file.
+      changelogFile.writeAsStringSync(newSection + changelogContent);
     }
   }
 }

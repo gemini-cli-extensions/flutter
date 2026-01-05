@@ -186,7 +186,62 @@ void main() {
         isTrue,
       );
     });
+
+    test('builds release with GITHUB_MATRIX_OS detection', () async {
+      final fs = MemoryFileSystem();
+      final pm = MockProcessManager(fs: fs);
+      final platform = FakePlatform(
+        operatingSystem:
+            'linux', // Actual OS shouldn't matter if env var is set
+        environment: {
+          'HOME': '/home/user',
+          'GITHUB_MATRIX_OS': 'ubuntu-latest',
+        },
+      );
+
+      fs.directory('/repo').createSync();
+      fs.currentDirectory = '/repo';
+      fs.file('/repo/gemini-extension.json').createSync();
+
+      final context = ScriptContext(fs: fs, pm: pm, platform: platform);
+      await BuildReleaseCommand(context).run();
+
+      expect(
+        pm.executedCommands,
+        contains(
+          contains('git archive --format=tar -o linux.arm64.flutter.tar HEAD'),
+        ),
+      );
+    });
+
+    test('builds release with RUNNER_ARCH env var', () async {
+      final fs = MemoryFileSystem();
+      final pm = MockProcessManager(fs: fs);
+      final platform = FakePlatform(
+        operatingSystem: 'linux',
+        environment: {
+          'HOME': '/home/user',
+          'GITHUB_MATRIX_OS': 'ubuntu-latest',
+          'RUNNER_ARCH': 'ARM64',
+        },
+      );
+
+      fs.directory('/repo').createSync();
+      fs.currentDirectory = '/repo';
+      fs.file('/repo/gemini-extension.json').createSync();
+
+      final context = ScriptContext(fs: fs, pm: pm, platform: platform);
+      await BuildReleaseCommand(context).run();
+
+      expect(
+        pm.executedCommands,
+        contains(
+          contains('git archive --format=tar -o linux.arm64.flutter.tar HEAD'),
+        ),
+      );
+    });
   });
+
 
   group('BumpVersionCommand', () {
     test('updates version in files', () async {
@@ -240,7 +295,7 @@ void main() {
         pm.executedCommands,
         contains(
           contains(
-            'tar -xzf /repo/linux.x64.flutter.tar.gz -C /home/user/.gemini/extensions/flutter',
+            'tar -xzf /repo/linux.arm64.flutter.tar.gz -C /home/user/.gemini/extensions/flutter',
           ),
         ),
       );
