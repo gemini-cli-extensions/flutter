@@ -33,7 +33,7 @@ class BumpVersionCommand {
     _updateExtensionJson(repoPath);
     _updateChangelog(repoPath);
 
-    print('Version bumped to $newVersion');
+    context.stdout.writeln('Version bumped to $newVersion');
   }
 
   void _updateExtensionJson(String repoPath) {
@@ -93,9 +93,7 @@ class BumpVersionCommand {
 
     // Strategy:
     // 1. Insert before the first `## Version` header.
-    // 2. If no version headers, insert after the main title `# Title`.
-    // 3. Otherwise, prepend to file.
-
+    // 2. If no version headers, prepend to file.
     final firstHeaderMatch = RegExp(
       r'^##\s',
       multiLine: true,

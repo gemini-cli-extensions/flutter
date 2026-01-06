@@ -18,7 +18,9 @@ class BuildReleaseCommand {
   BuildReleaseCommand(this.context);
 
   /// Executes the build release process.
-  Future<void> run() async {
+  ///
+  /// Returns the path to the created archive.
+  Future<String> run() async {
     final fs = context.fs;
     final platform = context.platform;
 
@@ -34,8 +36,10 @@ class BuildReleaseCommand {
     final repoPath = repoRoot.path;
     print('Repository root: $repoPath');
 
-    String githubRef = platform.environment['GITHUB_REF'] ?? 'refs/tags/HEAD';
-    String tagName = githubRef.replaceFirst('refs/tags/', '');
+    String tagName = (platform.environment['GITHUB_REF'] ?? 'refs/tags/HEAD');
+    if (tagName.startsWith('refs/tags/')) {
+      tagName = tagName.substring('refs/tags/'.length);
+    }
     if (tagName.isEmpty) tagName = 'HEAD';
 
     if (fs.isFileSync(fs.path.join(repoPath, archiveName))) {
@@ -91,7 +95,9 @@ class BuildReleaseCommand {
       fs.file(githubEnv).writeAsStringSync('ARCHIVE_NAME=$archiveName\n',
           mode: FileMode.append);
     } else {
-      print('Archive written to $archiveName');
+      context.stdout.writeln('Archive written to $archiveName');
     }
+
+    return fs.path.join(repoPath, archiveName);
   }
 }

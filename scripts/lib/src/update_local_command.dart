@@ -22,7 +22,7 @@ class UpdateLocalCommand {
   Future<void> run() async {
     // 1. Build release
     print('Building the release...');
-    await BuildReleaseCommand(context).run();
+    final archivePath = await BuildReleaseCommand(context).run();
 
     final fs = context.fs;
     final platform = context.platform;
@@ -51,21 +51,11 @@ class UpdateLocalCommand {
     // 3. Extract
     print('Extracting the archive...');
 
-    final platformInfo = await getPlatformInfo(context);
-    final os = platformInfo.os;
-    final arch = platformInfo.arch;
-    final ext = platformInfo.ext;
-
-    final archiveName = '$os.$arch.flutter.$ext';
-
-    final repoRoot = findRepoRoot(context);
-    final archivePath = fs.path.join(repoRoot.path, archiveName);
-
     if (!fs.isFileSync(archivePath)) {
       throw ExitException('Archive not found at $archivePath after build.');
     }
 
-    if (os == 'windows') {
+    if (platform.isWindows) {
       await runProcess(context, [
         'powershell',
         '-command',
@@ -75,6 +65,6 @@ class UpdateLocalCommand {
       await runProcess(context, ['tar', '-xzf', archivePath, '-C', installDir]);
     }
 
-    print('Installation complete.');
+    context.stdout.writeln('Installation complete.');
   }
 }

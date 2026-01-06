@@ -48,17 +48,27 @@ class ScriptContext {
   /// The process manager for spawning subprocesses.
   final ProcessManager pm;
 
+  /// The standard output sink.
+  final io.IOSink stdout;
+
+  /// The standard error sink.
+  final io.IOSink stderr;
+
   /// Creates a new [ScriptContext].
   ///
   /// Dependencies default to their local implementations ([LocalFileSystem],
-  /// [LocalPlatform], [LocalProcessManager]) if not provided.
+  /// [LocalPlatform], [LocalProcessManager], [io.stdout], [io.stderr]) if not provided.
   ScriptContext({
     FileSystem? fs,
     Platform? platform,
     ProcessManager? pm,
+    io.IOSink? stdout,
+    io.IOSink? stderr,
   })  : fs = fs ?? const LocalFileSystem(),
         platform = platform ?? const LocalPlatform(),
-        pm = pm ?? const LocalProcessManager();
+       pm = pm ?? const LocalProcessManager(),
+       stdout = stdout ?? io.stdout,
+       stderr = stderr ?? io.stderr;
 }
 
 /// Runs the [callback] with the given [context], handling [ExitException]s.
@@ -170,13 +180,13 @@ Future<void> runProcess(
   final pm = context.pm;
   final process = await pm.start(command, workingDirectory: workingDirectory);
 
-  // We use io.stdout/stderr because we want to print to the real terminal
-  // even if 'context.fs' is mocked?
-  // Wait, `utils.dart` imports `dart:io` as `io`.
-  // If we want to be testable we might need a `Logger` in context, but for now strict IO is what was there.
-
-  process.stdout.transform(io.systemEncoding.decoder).listen(io.stdout.write);
-  process.stderr.transform(io.systemEncoding.decoder).listen(io.stderr.write);
+  // Pipe process output to main process output
+  process.stdout
+      .transform(io.systemEncoding.decoder)
+      .listen(context.stdout.write);
+  process.stderr
+      .transform(io.systemEncoding.decoder)
+      .listen(context.stderr.write);
 
   final exitCode = await process.exitCode;
   if (exitCode != 0) {

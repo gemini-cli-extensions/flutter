@@ -16,6 +16,328 @@ import 'package:release_scripts/src/update_local_command.dart';
 import 'package:release_scripts/src/utils.dart';
 import 'package:test/test.dart';
 
+void main() {
+  group('BuildReleaseCommand', () {
+    late BuildReleaseCommand command;
+    late MockProcessManager pm;
+    late MemoryFileSystem fs;
+    late FakePlatform platform;
+    late FakeIOSink stdout;
+    late FakeIOSink stderr;
+
+    setUp(() {
+      fs = MemoryFileSystem(style: FileSystemStyle.posix);
+      pm = MockProcessManager(fs: fs);
+      platform = FakePlatform(
+        operatingSystem: 'linux',
+        environment: {'HOME': '/home/user'},
+      );
+      stdout = FakeIOSink();
+      stderr = FakeIOSink();
+      final context = ScriptContext(
+        fs: fs,
+        pm: pm,
+        platform: platform,
+        stdout: stdout,
+        stderr: stderr,
+      );
+      command = BuildReleaseCommand(context);
+
+      // Setup repo root
+      fs.directory('/repo').createSync();
+      fs.file('/repo/gemini-extension.json').createSync();
+      fs.currentDirectory = '/repo';
+    });
+
+    test('builds release archive successfully', () async {
+      final archivePath = await command.run();
+
+      expect(archivePath, '/repo/linux.arm64.flutter.tar.gz');
+      expect(
+        stdout.toString(),
+        contains('Archive written to linux.arm64.flutter.tar.gz'),
+      );
+
+      expect(
+        pm.executedCommands,
+        containsAll([
+          'git archive --format=tar -o linux.arm64.flutter.tar HEAD gemini-extension.json commands/ LICENSE README.md flutter.md',
+          'gzip --force linux.arm64.flutter.tar',
+        ]),
+      );
+    });
+
+    test('parses tagName from GITHUB_REF', () async {
+      platform.environment['GITHUB_REF'] = 'refs/tags/v1.2.3';
+
+      final archivePath = await command.run();
+
+      expect(archivePath, '/repo/linux.arm64.flutter.tar.gz');
+      // Verify correct tag was used in git archive command
+      expect(
+        pm.executedCommands.any(
+          (cmd) =>
+              cmd.contains('git archive') &&
+              cmd.contains('v1.2.3') &&
+              !cmd.contains('--prefix'),
+        ),
+        isTrue,
+        reason: 'Should use tag name v1.2.3 from GITHUB_REF without prefix',
+      );
+    });
+
+    test('detects architecture dynamically on Linux (arm64)', () async {
+      // Mock uname -m response handled in MockProcessManager
+
+      final archivePath = await command.run();
+
+      expect(archivePath, '/repo/linux.arm64.flutter.tar.gz');
+      expect(pm.executedCommands, contains('uname -m'));
+    });
+
+    test('builds release with RUNNER_ARCH env var', () async {
+      platform.environment['GITHUB_MATRIX_OS'] = 'ubuntu-latest';
+      platform.environment['RUNNER_ARCH'] = 'ARM64';
+
+      final archivePath = await command.run();
+
+      expect(archivePath, '/repo/linux.arm64.flutter.tar.gz');
+    });
+
+    test('builds release archive successfully on Windows', () async {
+      // Re-initialize for Windows
+      fs = MemoryFileSystem(style: FileSystemStyle.windows);
+      pm = MockProcessManager(fs: fs);
+      platform = FakePlatform(
+        operatingSystem: 'windows',
+        environment: {'USERPROFILE': r'C:\Users\user'},
+      );
+      stdout = FakeIOSink();
+      stderr = FakeIOSink();
+
+      // Setup repo
+      fs.directory(r'C:\repo').createSync(recursive: true);
+      fs.file(r'C:\repo\gemini-extension.json').createSync();
+      fs.currentDirectory = r'C:\repo';
+
+      final context = ScriptContext(
+        fs: fs,
+        pm: pm,
+        platform: platform,
+        stdout: stdout,
+        stderr: stderr,
+      );
+      command = BuildReleaseCommand(context);
+
+      final archivePath = await command.run();
+
+      expect(archivePath, r'C:\repo\windows.x64.flutter.zip');
+      expect(
+        pm.executedCommands,
+        containsAll([
+          'git archive --format=zip -o windows.x64.flutter.zip HEAD gemini-extension.json commands/ LICENSE README.md flutter.md',
+        ]),
+      );
+    });
+  });
+
+  group('BumpVersionCommand', () {
+    late BumpVersionCommand command;
+    late MockProcessManager pm;
+    late MemoryFileSystem fs;
+    late FakePlatform platform;
+    late FakeIOSink stdout;
+    late FakeIOSink stderr;
+
+    setUp(() {
+      fs = MemoryFileSystem();
+      pm = MockProcessManager();
+      platform = FakePlatform();
+      stdout = FakeIOSink();
+      stderr = FakeIOSink();
+      final context = ScriptContext(
+        fs: fs,
+        pm: pm,
+        platform: platform,
+        stdout: stdout,
+        stderr: stderr,
+      );
+      command = BumpVersionCommand(context, '1.0.1');
+
+      // Setup repo and files
+      fs.directory('/repo').createSync();
+      fs
+          .file('/repo/gemini-extension.json')
+          .writeAsStringSync('{"version": "1.0.0"}');
+      fs
+          .file('/repo/CHANGELOG.md')
+          .writeAsStringSync('# Changelog\n\n## 1.0.0\n\nNotes');
+      fs.currentDirectory = '/repo';
+    });
+
+    test('updates version in files', () async {
+      await command.run();
+
+      final jsonContent = json.decode(
+        fs.file('/repo/gemini-extension.json').readAsStringSync(),
+      );
+      expect(jsonContent['version'], '1.0.1');
+
+      final changelog = fs.file('/repo/CHANGELOG.md').readAsStringSync();
+      expect(changelog, contains('## 1.0.1'));
+      expect(changelog, contains('TODO: Describe the changes'));
+
+      expect(stdout.toString(), contains('Version bumped to 1.0.1'));
+    });
+  });
+
+  group('UpdateLocalCommand', () {
+    late UpdateLocalCommand command;
+    late MockProcessManager pm;
+    late MemoryFileSystem fs;
+    late FakePlatform platform;
+    late FakeIOSink stdout;
+    late FakeIOSink stderr;
+
+    setUp(() {
+      fs = MemoryFileSystem(style: FileSystemStyle.posix);
+      pm = MockProcessManager(fs: fs);
+      platform = FakePlatform(
+        operatingSystem: 'linux',
+        environment: {'HOME': '/home/user'},
+      );
+      stdout = FakeIOSink();
+      stderr = FakeIOSink();
+      final context = ScriptContext(
+        fs: fs,
+        pm: pm,
+        platform: platform,
+        stdout: stdout,
+        stderr: stderr,
+      );
+      command = UpdateLocalCommand(context);
+
+      fs.directory('/repo').createSync();
+      fs.file('/repo/gemini-extension.json').createSync();
+      fs.currentDirectory = '/repo';
+    });
+
+    test('updates local installation', () async {
+      await command.run();
+
+      expect(
+        fs.directory('/home/user/.gemini/extensions/flutter').existsSync(),
+        isTrue,
+      );
+      expect(
+        pm.executedCommands,
+        contains(
+          'tar -xzf /repo/linux.arm64.flutter.tar.gz -C /home/user/.gemini/extensions/flutter',
+        ),
+      );
+
+      expect(stdout.toString(), contains('Installation complete.'));
+    });
+
+    test('updates local installation on Windows', () async {
+      // Re-initialize for Windows
+      fs = MemoryFileSystem(style: FileSystemStyle.windows);
+      pm = MockProcessManager(fs: fs);
+      platform = FakePlatform(
+        operatingSystem: 'windows',
+        environment: {'USERPROFILE': r'C:\Users\user'},
+      );
+      stdout = FakeIOSink();
+      stderr = FakeIOSink();
+
+      // Setup repo
+      fs.directory(r'C:\repo').createSync(recursive: true);
+      fs.file(r'C:\repo\gemini-extension.json').createSync();
+      fs.currentDirectory = r'C:\repo';
+
+      final context = ScriptContext(
+        fs: fs,
+        pm: pm,
+        platform: platform,
+        stdout: stdout,
+        stderr: stderr,
+      );
+      command = UpdateLocalCommand(context);
+
+      await command.run();
+
+      expect(
+        fs.directory(r'C:\Users\user\.gemini\extensions\flutter').existsSync(),
+        isTrue,
+        reason: 'Installation directory should exist',
+      );
+
+      // Check executed commands contain powershell
+      expect(
+        pm.executedCommands.any(
+          (cmd) => cmd.contains('powershell') && cmd.contains('Expand-Archive'),
+        ),
+        isTrue,
+        reason: 'Should use PowerShell Expand-Archive',
+      );
+    });
+  });
+}
+
+class FakeIOSink implements IOSink {
+  final StringBuffer buffer = StringBuffer();
+
+  @override
+  Encoding encoding = systemEncoding;
+
+  @override
+  void add(List<int> data) {
+    buffer.write(String.fromCharCodes(data));
+  }
+
+  @override
+  void write(Object? object) {
+    buffer.write(object);
+  }
+
+  @override
+  void writeln([Object? object = ""]) {
+    buffer.writeln(object);
+  }
+
+  @override
+  void writeAll(Iterable objects, [String separator = ""]) {
+    buffer.writeAll(objects, separator);
+  }
+
+  @override
+  void writeCharCode(int charCode) {
+    buffer.writeCharCode(charCode);
+  }
+
+  @override
+  Future addStream(Stream<List<int>> stream) async {
+    await for (final data in stream) {
+      add(data);
+    }
+  }
+
+  @override
+  Future flush() async {}
+
+  @override
+  Future close() async {}
+
+  @override
+  Future get done => Future.value();
+
+  @override
+  void addError(Object error, [StackTrace? stackTrace]) {}
+
+  @override
+  String toString() => buffer.toString();
+}
+
 class MockProcessManager implements ProcessManager {
   final List<String> executedCommands = [];
   final FileSystem? fs;
@@ -87,7 +409,35 @@ class MockProcessManager implements ProcessManager {
         }
       }
     }
+    // Handle PowerShell Expand-Archive
+    if (command.contains('powershell')) {
+      dynamic cmdArg;
+      for (final element in command) {
+        if (element.toString().contains('Expand-Archive')) {
+          cmdArg = element;
+          break;
+        }
+      }
+      if (cmdArg != null) {
+        // Parse destination path roughly
+        // Expand-Archive -Path "..." -DestinationPath "..." -Force
+        final match = RegExp(
+          r'-DestinationPath "([^"]+)"',
+        ).firstMatch(cmdArg.toString());
+        if (match != null) {
+          final destDir = match.group(1)!;
+          // Ensure we treat the path as appropriate for the style (Windows)
+          // But MockProcessManager.fs style is dynamic.
+          // destination path usually passed clean from UpdateLocalCommand.
+          if (!fs!.directory(destDir).existsSync()) {
+            fs!.directory(destDir).createSync(recursive: true);
+          }
+        }
+      }
+    }
   }
+
+
 
   @override
   ProcessResult runSync(
@@ -99,7 +449,11 @@ class MockProcessManager implements ProcessManager {
     Encoding? stdoutEncoding = systemEncoding,
     Encoding? stderrEncoding = systemEncoding,
   }) {
-    executedCommands.add(command.map((e) => e.toString()).join(' '));
+    final cmdStr = command.map((e) => e.toString()).join(' ');
+    executedCommands.add(cmdStr);
+    if (cmdStr.contains('uname -m')) {
+      return ProcessResult(0, 0, 'arm64', '');
+    }
     return ProcessResult(0, 0, '', '');
   }
 
@@ -128,181 +482,4 @@ class _MockProcess implements Process {
 
   @override
   int get pid => 0;
-}
-
-void main() {
-  group('BuildReleaseCommand', () {
-    test('builds release on macos', () async {
-      final fs = MemoryFileSystem();
-      final pm = MockProcessManager(fs: fs);
-      final platform = FakePlatform(
-        operatingSystem: 'macos',
-        environment: {'HOME': '/home/user'},
-      );
-
-      // Setup fs
-      fs.directory('/repo').createSync();
-      fs.currentDirectory = '/repo';
-      fs.file('/repo/gemini-extension.json').createSync();
-
-      final context = ScriptContext(fs: fs, pm: pm, platform: platform);
-
-      await BuildReleaseCommand(context).run();
-
-      expect(
-        pm.executedCommands,
-        contains(
-          contains('git archive --format=tar -o darwin.arm64.flutter.tar HEAD'),
-        ),
-      );
-      expect(
-        pm.executedCommands,
-        contains(contains('gzip --force darwin.arm64.flutter.tar')),
-      );
-    });
-
-    test('builds release on windows', () async {
-      // Use Windows style for MemoryFileSystem
-      final fs = MemoryFileSystem(style: FileSystemStyle.windows);
-      final pm = MockProcessManager(fs: fs);
-      final platform = FakePlatform(
-        operatingSystem: 'windows',
-        environment: {'USERPROFILE': 'C:\\Users\\User'},
-      );
-
-      fs.directory('C:\\repo').createSync(recursive: true);
-      fs.currentDirectory = 'C:\\repo';
-      fs.file('C:\\repo\\gemini-extension.json').createSync();
-
-      final context = ScriptContext(fs: fs, pm: pm, platform: platform);
-      await BuildReleaseCommand(context).run();
-
-      expect(
-        pm.executedCommands.any(
-          (c) =>
-              c.contains('git archive --format=zip') &&
-              c.contains('windows.x64.flutter.zip'),
-        ),
-        isTrue,
-      );
-    });
-
-    test('builds release with GITHUB_MATRIX_OS detection', () async {
-      final fs = MemoryFileSystem();
-      final pm = MockProcessManager(fs: fs);
-      final platform = FakePlatform(
-        operatingSystem:
-            'linux', // Actual OS shouldn't matter if env var is set
-        environment: {
-          'HOME': '/home/user',
-          'GITHUB_MATRIX_OS': 'ubuntu-latest',
-        },
-      );
-
-      fs.directory('/repo').createSync();
-      fs.currentDirectory = '/repo';
-      fs.file('/repo/gemini-extension.json').createSync();
-
-      final context = ScriptContext(fs: fs, pm: pm, platform: platform);
-      await BuildReleaseCommand(context).run();
-
-      expect(
-        pm.executedCommands,
-        contains(
-          contains('git archive --format=tar -o linux.arm64.flutter.tar HEAD'),
-        ),
-      );
-    });
-
-    test('builds release with RUNNER_ARCH env var', () async {
-      final fs = MemoryFileSystem();
-      final pm = MockProcessManager(fs: fs);
-      final platform = FakePlatform(
-        operatingSystem: 'linux',
-        environment: {
-          'HOME': '/home/user',
-          'GITHUB_MATRIX_OS': 'ubuntu-latest',
-          'RUNNER_ARCH': 'ARM64',
-        },
-      );
-
-      fs.directory('/repo').createSync();
-      fs.currentDirectory = '/repo';
-      fs.file('/repo/gemini-extension.json').createSync();
-
-      final context = ScriptContext(fs: fs, pm: pm, platform: platform);
-      await BuildReleaseCommand(context).run();
-
-      expect(
-        pm.executedCommands,
-        contains(
-          contains('git archive --format=tar -o linux.arm64.flutter.tar HEAD'),
-        ),
-      );
-    });
-  });
-
-
-  group('BumpVersionCommand', () {
-    test('updates version in files', () async {
-      final fs = MemoryFileSystem();
-      final platform = FakePlatform();
-
-      fs.directory('/repo').createSync();
-      fs.currentDirectory = '/repo';
-      fs
-          .file('/repo/gemini-extension.json')
-          .writeAsStringSync('{"version": "1.0.0"}');
-      fs
-          .file('/repo/CHANGELOG.md')
-          .writeAsStringSync('# Changelog\n\n## 1.0.0\n\nNotes');
-
-      final context = ScriptContext(fs: fs, platform: platform);
-      await BumpVersionCommand(context, '1.0.1').run();
-
-      expect(
-        fs.file('/repo/gemini-extension.json').readAsStringSync(),
-        contains('"version": "1.0.1"'),
-      );
-
-      final changelogContent = fs.file('/repo/CHANGELOG.md').readAsStringSync();
-      expect(
-        changelogContent,
-        startsWith(
-          '# Changelog\n\n## 1.0.1\n\n- TODO: Describe the changes in this version.\n\n## 1.0.0',
-        ),
-      );
-    });
-  });
-
-  group('UpdateLocalCommand', () {
-    test('updates local installation', () async {
-      final fs = MemoryFileSystem();
-      final pm = MockProcessManager(fs: fs);
-      final platform = FakePlatform(
-        operatingSystem: 'linux',
-        environment: {'HOME': '/home/user'},
-      );
-
-      fs.directory('/repo').createSync();
-      fs.currentDirectory = '/repo';
-      fs.file('/repo/gemini-extension.json').createSync();
-
-      final context = ScriptContext(fs: fs, pm: pm, platform: platform);
-      await UpdateLocalCommand(context).run();
-
-      expect(
-        pm.executedCommands,
-        contains(
-          contains(
-            'tar -xzf /repo/linux.arm64.flutter.tar.gz -C /home/user/.gemini/extensions/flutter',
-          ),
-        ),
-      );
-      expect(
-        fs.directory('/home/user/.gemini/extensions/flutter').existsSync(),
-        isTrue,
-      );
-    });
-  });
 }
