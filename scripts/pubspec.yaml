@@ -1,0 +1,21 @@
+# Copyright 2025 The Flutter Authors.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: release_scripts
+description: Scripts for maintaining the flutter gemini extension.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=3.9.0 <4.0.0"
+
+dependencies:
+  args: ^2.4.2
+  file: ^7.0.0
+  path: ^1.8.3
+  platform: ^3.1.0
+  process: ^5.0.0
+
+dev_dependencies:
+  test: ^1.24.6

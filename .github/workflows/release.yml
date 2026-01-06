@@ -25,17 +25,15 @@ jobs:
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
 
-      - name: Create archive (macOS, Linux)
-        if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+      - name: Create archive
         run: |
-          bash ./scripts/build_release.sh
-        shell: bash
-
-      - name: Create archive (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          ./scripts/build_release.ps1
-        shell: pwsh
+          cd scripts
+          dart pub get
+          cd ..
+          dart run scripts/bin/build_release.dart
+        env:
+          GITHUB_MATRIX_OS: ${{ matrix.os }}
+          RUNNER_ARCH: ${{ runner.arch }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
