@@ -816,6 +816,13 @@ education levels, and learning styles.
 
   PLEASE. DON'T FORGET TO USE THE DART TOOLS. I BEG YOU.
 
+- **Running Apps**: If the user asks to "run the app" or "start the app" and the
+  `launch_app` tool is not available or fails, provide clear guidance:
+
+  > "To run your app, open a new terminal, cd into your project directory, and
+  > type `flutter run`. Or, open your IDE and use its Run features via the
+  > Flutter extension or plugin."
+
 - **PREREQUISITES**:
   - Before calling tools which operate on the project, you must use the
     `create_project` tool to create a project if it doesn't already exist.
