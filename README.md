@@ -22,7 +22,7 @@ Help Gemini CLI create, build, test, and run Flutter apps.
 
 ### 1. Install from GitHub
 
-Use the `gemini extensions install` command to install directly from the source repository:
+Use the `gemini extensions install` terminal command to install directly from the source repository:
 
 ```bash
 gemini extensions install https://github.com/gemini-cli-extensions/flutter.git --auto-update
@@ -32,13 +32,17 @@ The `--auto-update` is optional: if specified, it will update to new versions as
 
 You can manage the extension with the following commands:
 
-```bash
-# Update to the latest version
-gemini extensions update flutter
+- Update to the latest version.
 
-# Uninstall the extension
-gemini extensions uninstall flutter
-```
+  ```bash
+  gemini extensions update flutter
+  ```
+
+- Uninstall the extension.
+
+  ```bash
+  gemini extensions uninstall flutter
+  ```
 
 **Note for Windows users:** There is currently a [known issue](https://github.com/google-gemini/gemini-cli/issues/10616) with installing extensions on Gemini CLI for Windows. The workaround is as follows:
 

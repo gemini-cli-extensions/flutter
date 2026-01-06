@@ -1,9 +1,10 @@
-## Unreleased
+# Flutter Gemini CLI Extension Changelog
 
-- Added version detection warnings for hot reload on Flutter stable ≤ 3.37.0
-  - Updated `/debug-app`, `/create-app`, and `/modify` commands to warn users about hot reload limitations
-  - Provides guidance to switch to Flutter main channel or manually restart apps when hot reload fails
-  - Related to [#15](https://github.com/gemini-cli-extensions/flutter/issues/15)
+## 0.4.0
+
+- Created the implementation plan and design doc in the `specs/` directory.
+- Modified `flutter.md` rules to make it clear that they only apply to Flutter
+  and Dart development.
 
 ## 0.3.0
 
