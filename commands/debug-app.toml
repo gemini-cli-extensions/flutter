@@ -34,6 +34,7 @@ Next, collect additional information required for debugging. Ask the user one qu
 Before diving into the code, let's verify the project's dependencies and environment.
 
 - [ ] Run `flutter doctor` to get the Flutter and Dart SDK versions and check for any issues reported.
+  - Hot reload only works reliably on Flutter at versions at or above 3.37.0. If hot_reload fails, and they are using a version below that, inform the user and suggest either switching to the Flutter main channel or manually reloading the app.
 - [ ] Use the `pub` tool with the `outdated` command to look for outdated packages or dependency conflicts in `pubspec.yaml` and `pubspec.lock`.
   - Run the command `pub` tool with `upgrade` to upgrade to latest versions.
   - If that isn't sufficient, sometimes upgrading the package version to a new major version can help. The `pub` tool can't do this, so run the command `dart pub upgrade --major-versions` to do this.
@@ -62,7 +63,9 @@ The debugging strategy should be chosen to yield the best results and may involv
 
 - **Logging and Tracing:**
   - Add strategic logging statements to the code to trace execution flow. Prefer `debugPrint()` over `print()` for cleaner, non-interfering output.
-  - Use `hot_reload` to apply logging changes quickly while preserving the app's state. If the state needs to be reset, explain that a Hot Restart is needed, and you will need to stop and restart the app.
+  - Use `hot_reload` to apply logging changes quickly while preserving the app's state.
+    - Hot reload only works reliably on Flutter at versions at or above 3.37.0. If hot_reload fails, and they are using a version below that, inform the user and suggest either switching to the Flutter main channel or manually reloading the app.
+  - If the state needs to be reset, explain that a Hot Restart is needed, and you will need to stop and restart the app.
 
 - **Flutter DevTools & UI Inspection:**
   - **For UI and layout bugs:** Use the `get_widget_tree` tool to inspect the widget hierarchy and properties.
