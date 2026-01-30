@@ -31,13 +31,19 @@ First, make sure there are no uncommitted changes on the current branch. If ther
 
 If the user wants the work done on a new branch, create the branch now.
 
-## Modification design document
+## Feature specification directory
 
-Develop a **DETAILED** Markdown-formatted design document that follows all of the guidance you have about Dart and Flutter design patterns, rules, best practices, and core principles. Save the design document in MODIFICATION_DESIGN.md in the top directory of the workspace. Feel free to use your available tools to research any aspects of the modification that are unclear.
+Create a numbered feature directory under `specs/` to organize all specification documents. The directory should be named with a three-digit prefix followed by a kebab-case modification name (e.g., `specs/002-add-authentication/`). If other numbered directories already exist in `specs/`, use the next available number.
 
-The design doc should (at least) include:
+## Modification design documents
 
-- An overview
+Develop **DETAILED** Markdown-formatted design documents that follow all of the guidance you have about Dart and Flutter design patterns, rules, best practices, and core principles. Feel free to use your available tools to research any aspects of the modification that are unclear.
+
+Create the following files in the feature specification directory:
+
+### specs/NNN-feature-name/spec.md
+The main specification document containing:
+- An overview of the modification
 - A detailed analysis of the goal or problem
 - Alternatives considered
 - A detailed design for the modification
@@ -46,13 +52,33 @@ The design doc should (at least) include:
 - A summary of the design
 - References to research URLs used to arrive at the design.
 
-Be sure to **actually fetch and read** the research URLs **before** writing the design document. Do actual web research on the topics that are important to the design.
+### specs/NNN-feature-name/data-model.md
+A dedicated document for data model changes (if applicable) containing:
+- Entity modifications
+- Schema changes
+- State management updates
+- Data flow diagrams in Mermaid format
 
-You must ask the user to review this design document and they must approve it before you continue on to create the implementation plan. They must review and approve it first because if they ask for any changes, it may affect the implementation plan.
+### specs/NNN-feature-name/plan.md
+A high-level plan document containing:
+- Modification milestones
+- Key deliverables
+- Dependencies and risks
+- Success criteria
+
+### specs/NNN-feature-name/checklists/requirements.md
+A requirements checklist containing:
+- [ ] Functional requirements for this modification (checkboxed list)
+- [ ] Non-functional requirements (checkboxed list)
+- [ ] Acceptance criteria
+
+Be sure to **actually fetch and read** the research URLs **before** writing the design documents. Do actual web research on the topics that are important to the design.
+
+You must ask the user to review these design documents and they must approve them before you continue on to create the implementation plan. They must review and approve first because if they ask for any changes, it may affect the implementation plan.
 
 ## Implementation plan
 
-After getting explicit approval from the user for the MODIFICATION_DESIGN.md document, develop a **DETAILED** Markdown-formatted phased implementation plan of checkboxed tasks that need to be performed in order to finish the modification. Save the implementation plan in MODIFICATION_IMPLEMENTATION.md in the top of the repo.
+After getting explicit approval from the user for the design documents, develop a **DETAILED** Markdown-formatted phased implementation plan of checkboxed tasks that need to be performed in order to finish the modification. Save the implementation plan in `specs/NNN-feature-name/tasks.md` (in the same feature directory as the design documents).
 
 The implementation plan should include a section for a "Journal" which will be updated after each phase and contain a log of the actions taken, things learned, surprises, and deviations from the plan. It should be in chronological order.
 
@@ -68,8 +94,9 @@ The implementation plan should specify after each phase that you should:
 - [ ] Run the analyze_files tool one more time and fix any issues.
 - [ ] Run any tests to make sure they all pass.
 - [ ] Run dart_format to make sure that the formatting is correct.
-- [ ] Re-read the MODIFICATION_IMPLEMENTATION.md file to see what, if anything, has changed in the implementation plan, and if it has changed, take care of anything the changes imply.
-- [ ] Update the MODIFICATION_IMPLEMENTATION.md file with the current state, including any learnings, surprises, or deviations in the Journal section. Check off any checkboxes of items that have been completed.
+- [ ] Re-read the tasks.md file to see what, if anything, has changed in the implementation plan, and if it has changed, take care of anything the changes imply.
+- [ ] Update the tasks.md file with the current state, including any learnings, surprises, or deviations in the Journal section. Check off any checkboxes of items that have been completed.
+- [ ] Update the checklists/requirements.md file to check off any requirements that have been satisfied.
 - [ ] Use `git diff` to verify the changes that have been made, and create a suitable commit message for any changes, following any guidelines you have about commit messages. Be sure to properly escape dollar signs and backticks, and present the change message to the user for approval.
 - [ ] Wait for approval. Don't commit the changes or move on to the next phase of implementation until the user approves the commit.
 - [ ] After commiting the change, if an app is running, use the hot_reload tool to reload it.
@@ -81,9 +108,9 @@ In the last phase of the plan, include steps to:
 - [ ] Update any GEMINI.md file in the project directory so that it still correctly describes the app, its purpose, and implementation details and the layout of the files.
 - [ ] Ask the user to inspect the package (and running app, if any) and say if they are satisfied with it, or if any modifications are needed.
 
-You must ask the user to review this implementation plan and they must approve it before starting implementation. They must review and approve it before you begin because if they ask for any changes, the changes may affect the implementation.
+You must ask the user to review the tasks.md implementation plan and they must approve it before starting implementation. They must review and approve it before you begin because if they ask for any changes, the changes may affect the implementation.
 
 ## Implementation
 
-After getting explicit approval from the user for the MODIFICATION_IMPLEMENTATION.md document, begin implementing the plan.
+After getting explicit approval from the user for the tasks.md document, begin implementing the plan.
 """
