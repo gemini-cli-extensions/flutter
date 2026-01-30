@@ -170,7 +170,7 @@ page on dart.dev or the
 ## Known issues
 
 - Running a Flutter app from within Gemini CLI and then triggering a Hot Reload
-  does not work in Flutter stable <= 3.37.0.
+  does not work in Flutter stable <= 3.35.0.
   Tracking issue: [gemini-cli-extensions/flutter#15](https://github.com/gemini-cli-extensions/flutter/issues/15)
 
 ## 🐛 Troubleshooting

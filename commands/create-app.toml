@@ -32,28 +32,54 @@ Then create the package directory, if it doesn't already exist.
 
 **VERY IMPORTANT**: Change directories to the package directory now so that future operations are relative to that directory.
 
-## Design document
+## Feature specification directory
 
-Develop a **DETAILED** Markdown-formatted design document that follows all of the guidance you have about Dart and Flutter design patterns, rules, best practices, and core principles. Save the design document in specs/DESIGN.md in the package directory. Feel free to use your available tools to research any aspects of the design that need clarification.
+Create a numbered feature directory under `specs/` to organize all specification documents. The directory should be named with a three-digit prefix followed by a kebab-case feature name (e.g., `specs/001-my-app-name/`). If other numbered directories already exist in `specs/`, use the next available number.
 
-The design doc should (at least) include sections for:
+## Design documents
 
-- An overview
+Develop **DETAILED** Markdown-formatted design documents that follow all of the guidance you have about Dart and Flutter design patterns, rules, best practices, and core principles. Feel free to use your available tools to research any aspects of the design that need clarification.
+
+Create the following files in the feature specification directory:
+
+### specs/NNN-feature-name/spec.md
+The main specification document containing:
+- An overview of the app
 - A detailed analysis of the goal or problem
 - Alternatives considered
-- A detailed design for the new package
+- A detailed design for the new app
 - Any diagrams needed to explain the design, in Mermaid format.
   - Be sure to put quotes around labels that include special characters (e.g. parenthesis).
 - A summary of the design
 - References to research URLs used to arrive at the design.
 
-Be sure to **actually fetch and read** the research URLs **before** writing the design document. Do actual web research on the topics that are important to the design.
+### specs/NNN-feature-name/data-model.md
+A dedicated document for the data model containing:
+- Entity definitions and relationships
+- Database schema (if applicable)
+- State management structure
+- Data flow diagrams in Mermaid format
 
-You must ask the user to review this design document and they must approve it before you continue on to create the implementation plan. They must review and approve it first because if they ask for any changes, it may affect the implementation plan.
+### specs/NNN-feature-name/plan.md
+A high-level plan document containing:
+- Project milestones
+- Key deliverables
+- Dependencies and risks
+- Success criteria
+
+### specs/NNN-feature-name/checklists/requirements.md
+A requirements checklist containing:
+- [ ] Functional requirements (checkboxed list)
+- [ ] Non-functional requirements (checkboxed list)
+- [ ] User stories or acceptance criteria
+
+Be sure to **actually fetch and read** the research URLs **before** writing the design documents. Do actual web research on the topics that are important to the design.
+
+You must ask the user to review these design documents and they must approve them before you continue on to create the implementation plan. They must review and approve first because if they ask for any changes, it may affect the implementation plan.
 
 ## Implementation plan
 
-After getting explicit approval from the user for the DESIGN.md document, Develop a **DETAILED** Markdown-formatted phased implementation plan of checkboxed tasks that need to be performed in order to finish developing the package. Save the implementation plan in specs/IMPLEMENTATION.md in the package directory.
+After getting explicit approval from the user for the design documents, develop a **DETAILED** Markdown-formatted phased implementation plan of checkboxed tasks that need to be performed in order to finish developing the app. Save the implementation plan in `specs/NNN-feature-name/tasks.md` (in the same feature directory as the design documents).
 
 The implementation plan should include a section for a "Journal" which will be updated after each phase and contain a log of the actions taken, things learned, surprises, and deviations from the plan. It should be in chronological order.
 
@@ -81,11 +107,13 @@ The implementation plan should specify after each phase that you should:
 - [ ] Run the analyze_files tool one more time and fix any issues.
 - [ ] Run any tests to make sure they all pass.
 - [ ] Run dart_format to make sure that the formatting is correct.
-- [ ] Re-read the IMPLEMENTATION.md file to see what, if anything, has changed in the implementation plan, and if it has changed, take care of anything the changes imply.
-- [ ] Update the IMPLEMENTATION.md file with the current state, including any learnings, surprises, or deviations in the Journal section. Check off any checkboxes of items that have been completed.
+- [ ] Re-read the tasks.md file to see what, if anything, has changed in the implementation plan, and if it has changed, take care of anything the changes imply.
+- [ ] Update the tasks.md file with the current state, including any learnings, surprises, or deviations in the Journal section. Check off any checkboxes of items that have been completed.
+- [ ] Update the checklists/requirements.md file to check off any requirements that have been satisfied.
 - [ ] Use `git diff` to verify the changes that have been made, and create a suitable commit message for any changes, following any guidelines you have about commit messages. Be sure to properly escape dollar signs and backticks, and present the change message to the user for approval.
 - [ ] Wait for approval. Don't commit the changes or move on to the next phase of implementation until the user approves the commit.
 - [ ] After commiting the change, if the app is running, use the hot_reload tool to reload it.
+  - Hot reload only works reliably on Flutter at versions at or above 3.35.0. If hot_reload fails, and they are using a version below that, inform the user and suggest either switching to the Flutter main channel or manually reloading the app.
 
 In the last phase of the plan, include steps to:
 
@@ -93,9 +121,9 @@ In the last phase of the plan, include steps to:
 - [ ] Create a GEMINI.md file in the project directory that describes the app, its purpose, and implementation details of the application and the layout of the files.
 - [ ] Ask the user to inspect the app and the code and say if they are satisfied with it, or if any modifications are needed.
 
-You must ask the user to review this implementation plan and they must approve it before starting implementation. They must review and approve it before you begin because if they ask for any changes, the changes may affect the implementation.
+You must ask the user to review the tasks.md implementation plan and they must approve it before starting implementation. They must review and approve it before you begin because if they ask for any changes, the changes may affect the implementation.
 
 ## Implementation
 
-After getting explicit approval from the user for the IMPLEMENTATION.md document, begin implementing the plan.
+After getting explicit approval from the user for the tasks.md document, begin implementing the plan.
 """
