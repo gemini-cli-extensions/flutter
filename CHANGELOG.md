@@ -1,5 +1,9 @@
 # Flutter Gemini CLI Extension Changelog
 
+## 0.4.1
+
+- Removed quoting of "@" from the AI rules, since it is no longer needed.
+
 ## 0.4.0
 
 - Created the implementation plan and design doc in the `specs/` directory.
