@@ -113,7 +113,7 @@ The implementation plan should specify after each phase that you should:
 - [ ] Use `git diff` to verify the changes that have been made, and create a suitable commit message for any changes, following any guidelines you have about commit messages. Be sure to properly escape dollar signs and backticks, and present the change message to the user for approval.
 - [ ] Wait for approval. Don't commit the changes or move on to the next phase of implementation until the user approves the commit.
 - [ ] After commiting the change, if the app is running, use the hot_reload tool to reload it.
-  - Hot reload only works reliably on Flutter at versions at or above 3.37.0. If hot_reload fails, and they are using a version below that, inform the user and suggest either switching to the Flutter main channel or manually reloading the app.
+  - Hot reload only works reliably on Flutter at versions at or above 3.35.0. If hot_reload fails, and they are using a version below that, inform the user and suggest either switching to the Flutter main channel or manually reloading the app.
 
 In the last phase of the plan, include steps to:
 
