@@ -1,7 +1,7 @@
 {
   "name": "flutter",
   "description": "Enables several Flutter and Dart-related commands and context.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "contextFileName": "flutter.md",
   "mcpServers": {
     "dart": {

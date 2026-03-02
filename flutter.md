@@ -282,7 +282,7 @@ linter:
 
   part 'user.g.dart';
 
-  \@JsonSerializable(fieldRename: FieldRename.snake)
+  @JsonSerializable(fieldRename: FieldRename.snake)
   class User {
     final String firstName;
     final String lastName;
@@ -528,19 +528,19 @@ For custom styles that aren't part of the standard `ThemeData`, use
 
 ```dart
 // 1. Define the extension
-\@immutable
+@immutable
 class MyColors extends ThemeExtension<MyColors> {
   const MyColors({required this.success, required this.danger});
 
   final Color? success;
   final Color? danger;
 
-  \@override
+  @override
   ThemeExtension<MyColors> copyWith({Color? success, Color? danger}) {
     return MyColors(success: success ?? this.success, danger: danger ?? this.danger);
   }
 
-  \@override
+  @override
   ThemeExtension<MyColors> lerp(ThemeExtension<MyColors>? other, double t) {
     if (other is! MyColors) return this;
     return MyColors(
@@ -625,14 +625,14 @@ final ButtonStyle myButtonStyle = ButtonStyle(
   class MyDropdown extends StatefulWidget {
     const MyDropdown({super.key});
 
-    \@override
+    @override
     State<MyDropdown> createState() => _MyDropdownState();
   }
 
   class _MyDropdownState extends State<MyDropdown> {
     final _controller = OverlayPortalController();
 
-    \@override
+    @override
     Widget build(BuildContext context) {
       return OverlayPortal(
         controller: _controller,
