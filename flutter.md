@@ -38,8 +38,8 @@ for various platforms, including desktop, web, and mobile platforms.
 - **Widgets are for UI:** Everything in Flutter's UI is a widget. Compose
   complex UIs from smaller, reusable widgets.
 - **Navigation:** Use a modern routing package like `auto_route` or `go_router`.
-  See the [navigation guide](./navigation.md) for a detailed example using
-  `go_router`.
+  For more guidelines around navigation, see the section
+  on [routing/deep linking](#flutter-app-routingdeep-linking).
 
 ## Package management
 
@@ -156,7 +156,7 @@ When building reusable APIs, such as a library, follow these principles.
 ## Dart lint rules
 
 Include the package in the `analysis_options.yaml` file. Use the following
-analysis_options.yaml file as a starting point:
+`analysis_options.yaml` file as a starting point:
 
 ```yaml
 include: package:flutter_lints/flutter.yaml
@@ -467,10 +467,8 @@ linter:
 - **Responsiveness:** Use `LayoutBuilder` or `MediaQuery` to create responsive
   UIs.
 - **Text Fields:** Configure `textCapitalization`, `keyboardType`, and
-  `placehoder`.
-- **Responsiveness:** Use `LayoutBuilder` or `MediaQuery` to create responsive
-  UIs.
-- **Text:** Use `Theme.of(context).textTheme` for text styles. remote images.
+  `placeholder`.
+- **Text:** Use `Theme.of(context).textTheme` for text styles.
 
 ## Material theming best practices
 
@@ -802,8 +800,7 @@ education levels, and learning styles.
 ## Most important rules for Dart and Flutter development
 
 - **Prefer Dart Tools**: Always use the `dart` MCP server tools instead of their
-  command line equivalients. Use:
-
+  command line equivalents. Use:
   - `analyze_files` - instead of 'flutter analyze' or 'dart analyze'
   - `create_project` - instead of 'flutter create' or 'dart create'
   - `dart_fix` - instead of 'flutter fix' or 'dart fix'
