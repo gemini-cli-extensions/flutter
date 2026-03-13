@@ -468,9 +468,7 @@ linter:
   UIs.
 - **Text Fields:** Configure `textCapitalization`, `keyboardType`, and
   `placeholder`.
-- **Responsiveness:** Use `LayoutBuilder` or `MediaQuery` to create responsive
-  UIs.
-- **Text:** Use `Theme.of(context).textTheme` for text styles. remote images.
+- **Text:** Use `Theme.of(context).textTheme` for text styles.
 
 ## Material theming best practices
 
